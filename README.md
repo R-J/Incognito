@@ -1,14 +1,8 @@
-Incognito (alpha!)
+Incognito
 =========
 
-Plugin for Vanilla forum that allows logged in users to post as anonymous user.
-
-By default all comments and discsussions are done in the name of the system user. So before using that plugin, you should add a new user "anonymous" or something like that, look up the user id (eg 123) and add `$Configuration['Plugins']['Incognito']['UserID'] = 123;` to your /conf/config.php.
-
-The plugin adds a checkbox below the text input field that allows users to post as the specified user.
-
-TODO:
-fix ajax post back problem
-add role permissions
-check permissions for posting into that category!
-add prefix line to comments and discussion?
+Plugin for Vanilla forum that allows logged in users to post as one dedicated and as such, anonymous user account.   
+   
+This plugin is fully customizable regarding user roles, category permission and the user account that is used for the anonymous posts. By default a) no one is allowed to post anonymous and b) posting anonymous is allowed in no category at all. So you **have to** go to www.yourforum.com/dashboard/role and allow incognito posts for one or more roles in one or more categories.  
+   
+You can also specify which user account to use. You can create a user such as "Ghostwriter", "Anonymous" or "Cyrano" or whatever you like and set the line `$Configuration['Plugins']['Incognito']['UserID'] = '2';` accordingly in `/conf/config.php`
