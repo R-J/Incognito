@@ -51,7 +51,7 @@ class IncognitoPlugin extends Gdn_Plugin {
     * add CheckBox to new discussions
     *
     * @param PostController $Sender 
-    * @return void
+    *
     */
    public function PostController_DiscussionFormOptions_Handler($Sender) {
       if(Gdn::Session()->CheckPermission('Plugins.Incognito.Allow')) {
@@ -64,7 +64,7 @@ class IncognitoPlugin extends Gdn_Plugin {
     * add CheckBox to comment entry textbox
     *
     * @param DiscussionController $Sender 
-    * @return void
+    *
     */
    public function DiscussionController_AfterBodyField_Handler($Sender) {
       $Session = Gdn::Session();
@@ -88,7 +88,7 @@ class IncognitoPlugin extends Gdn_Plugin {
     * Call _HideUser before comment save
     *
     * @param CommentController $Sender 
-    * @return void
+    *
     */
    public function CommentModel_BeforeSaveComment_Handler($Sender) {
       $this->_HideUser($Sender);
@@ -98,17 +98,18 @@ class IncognitoPlugin extends Gdn_Plugin {
     * Call _HideUser before discussion save
     *
     * @param DiscussionController $Sender 
-    * @return void
+    *
     */
    public function DiscussionModel_BeforeSaveDiscussion_Handler($Sender) {
       $this->_HideUser($Sender);
    }
    
    /**
-    * Checks permissions and changes InsertUserID to IncognitoUserID
+    * Checks role permissions as well as category permissions
+    * and changes InsertUserID to IncognitoUserID
     *
     * @param VanillaController $Sender    Either CommentController or DiscussionController
-    * @return void
+    *
     */
    private function _HideUser($Sender) {
       $Session = Gdn::Session();
@@ -135,13 +136,14 @@ class IncognitoPlugin extends Gdn_Plugin {
       $Category = $CategoryModel->GetID($CategoryID);
       $PermissionCategoryID = $Category->PermissionCategoryID;
       
-      // check for permissions and change InsertUserID to IncognitoUserID
+      // check for permissions and change InsertUserID to IncognitoUserID...
       if ($Session->CheckPermission(array('Vanilla.Comments.Add', "Vanilla.{$PostType}.Incognito"), TRUE, 'Category', $PermissionCategoryID)
       ) {
          $IncognitoUserID = C('Plugins.Incognito.UserID', Gdn::UserModel()->GetSystemUserID());
          $Sender->EventArguments['FormPostValues']['InsertUserID'] = $IncognitoUserID;
       } else {
-         
+         // ... or stop with error message if no permissions
+         $Sender->Validation->AddValidationResult('CategoryID', 'You do not have permission to hide your name in this category');
       }
    }
 }
